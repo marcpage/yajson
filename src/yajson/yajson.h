@@ -212,8 +212,10 @@ public:
     virtual Value::Type getType() const override;
 
     virtual int count() const override;
+    virtual Value& get(const std::string& key);
     virtual Value& get(size_t index) override;
     virtual void clear() override;
+    virtual void erase(const std::string& key);
     virtual void erase(size_t start, size_t end) override;
     virtual void append(const Value& value) override;
     virtual void insert(const Value& value, size_t before) override;
@@ -1128,6 +1130,10 @@ inline int Array::count() const {
     return _value.size();
 }
 
+inline Value& Array::get(const std::string& key) {
+    return Instance::get(key);
+}
+
 inline Value& Array::get(size_t index) {
     while (index >= _value.size()) {
         _value.push_back(Value());
@@ -1153,6 +1159,10 @@ inline void Array::erase(size_t start, size_t end) { // NOTEST
                         : _value.begin() + static_cast<int>(end);
 
     _value.erase(startIter, endIter);
+}
+
+inline void Array::erase(const std::string& key) {
+    return Instance::erase(key);
 }
 
 inline void Array::append(const Value& value) {
