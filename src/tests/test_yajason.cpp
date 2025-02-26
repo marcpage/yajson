@@ -198,6 +198,128 @@ static bool testCreate() {
     return success;
 }
 
+static bool testNull() {
+    bool success = true;
+    auto j1 = yajson::Value();
+    const auto j2 = yajson::Value();
+
+    j1.clear();
+
+    success = success && j1.is(yajson::Value::Null);
+    success = success && j1.isNull();
+    success = success && !j1.boolean();
+    success = success && j1.integer() == 0;
+    success = success && j1.real() <= 0 && j1.real() >= 0;
+    success = success && j1.string().size() == 0;
+    success = success && j1.count() == 0;
+    success = success && j1.keys().size() == 0;
+    success = success && !j1.has("anything");
+    success = success && j1.format() == "null";
+
+    try {
+        j1.set("anything", "value");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.get("anything");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j2.get("anything");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.append("value");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.insert("value");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.get(0);
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j2.get(0);
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        const auto value = j1["anything"];
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        const auto value = j2["anything"];
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        const auto value = j1[0];
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        const auto value = j2[0];
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.erase(0);
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.erase("anything");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    success = success && j1 == j2;
+
+    j1 = 5;
+    success = success && j1.integer() == 5;
+
+    j1 = yajson::Value::null();
+    success = success && j1.isNull();
+
+    j1 += 1;
+    success = success && j1.integer() == 1;
+
+    j1 = yajson::Value::null();
+    success = success && j1.isNull();
+
+    j1 -= 5;
+    success = success && j1.integer() == -5;
+
+    j1 = yajson::Value::null();
+    success = success && j1.isNull();
+
+    j1 += int64_t(7);
+    success = success && j1.integer() == 7;
+
+    j1 = yajson::Value::null();
+    success = success && j1.isNull();
+
+    j1 -= int64_t(42);
+    success = success && j1.integer() == -42;
+
+    j1 = yajson::Value::null();
+    success = success && j1.isNull();
+
+    if (!success) {
+        printf("FAIL %s\n", __func__);
+    }
+
+    return success;
+}
+
 int main(const int /*argc*/, const char* const /*argv*/[]) {
     int failures = 0;
 
@@ -206,6 +328,7 @@ int main(const int /*argc*/, const char* const /*argv*/[]) {
     failures += testObject() ? 0 : 1;
     failures += testArray() ? 0 : 1;
     failures += testCreate() ? 0 : 1;
+    failures += testNull() ? 0 : 1;
 
     if (failures > 0) {
         printf("FAIL %d tests\n", failures);

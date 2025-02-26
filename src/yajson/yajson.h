@@ -428,29 +428,29 @@ inline std::string Value::format(int indent, int indentLevel) const {
     return format(buffer, indent, indentLevel);
 }
 
-inline Value& Value::clear() { // NOTEST
+inline Value& Value::clear() {
     if (!isNull()) {
-        _instance->clear();
+        _instance->clear(); // NOTEST
     }
 
     return *this;
 }
 
-inline Value& Value::erase(size_t start, size_t end) { // NOTEST
+inline Value& Value::erase(size_t start, size_t end) {
     if (isNull()) {
         throw std::domain_error("null");
     }
 
-    _instance->erase(start, end);
+    _instance->erase(start, end); // NOTEST
     return *this;
 }
 
-inline Value& Value::erase(const std::string& key) { // NOTEST
+inline Value& Value::erase(const std::string& key) {
     if (isNull()) {
         throw std::domain_error("null");
     }
 
-    _instance->erase(key);
+    _instance->erase(key); // NOTEST
     return *this;
 }
 
@@ -484,6 +484,8 @@ inline Value& Value::insert(const Value& value, size_t before) {
 inline Value& Value::operator=(const Value& other) {
     if (!other.isNull()) {
         _instance = InstPtr(other._instance->clone());
+    } else {
+        _instance = nullptr;
     }
 
     return *this;
@@ -523,7 +525,7 @@ inline Value& Value::operator+=(int64_t value) { // NOTEST
     return *this = integer() + value;
 }
 
-inline Value& Value::operator+=(int value) { // NOTEST
+inline Value& Value::operator+=(int value) {
     return *this = integer() + value;
 }
 
@@ -531,7 +533,7 @@ inline Value& Value::operator-=(int64_t value) { // NOTEST
     return *this = integer() - value;
 }
 
-inline Value& Value::operator-=(int value) { // NOTEST
+inline Value& Value::operator-=(int value) { 
     return *this = integer() - value;
 }
 
