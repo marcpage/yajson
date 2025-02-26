@@ -24,7 +24,7 @@ public:
     static Value array();
     static Value object();
 
-    Value()=default;
+    Value();
     Value(const std::string& value);
     Value(int value);
     Value(int64_t value);
@@ -241,9 +241,11 @@ public:
     virtual int count() const override;
     virtual Value::StringList keys() const override;
     virtual bool has(const std::string& key) override;
-    virtual Value& get(const std::string& key) override;
+    virtual Value& get(const std::string& key);
+    virtual Value& get(size_t index) override;
     virtual void clear() override;
-    virtual void erase(const std::string& key) override;
+    virtual void erase(const std::string& key);
+    virtual void erase(size_t start, size_t end) override;
     virtual void set(const std::string& key, const Value& value) override;
 
     Object(const Object&)=delete;
@@ -306,6 +308,9 @@ inline Value Value::object() {
     return Value(std::unique_ptr<Instance>(new yajson::Object({})));
 }
 
+inline Value::Value()
+    :_instance() {}
+    
 inline Value::Value(const std::string& value)
     :_instance() {
     *this = value;
@@ -1284,12 +1289,20 @@ inline Value& Object::get(const std::string& key) {
     return _value[key];
 }
 
+inline Value& Object::get(size_t index) {
+    return Instance::get(index);
+}
+
 inline void Object::clear() { // NOTEST
     _value.clear();
 }
 
 inline void Object::erase(const std::string& key) { // NOTEST
     _value.erase(key);
+}
+
+inline void Object::erase(size_t start, size_t end) {
+    return Instance::erase(start, end);
 }
 
 inline void Object::set(const std::string& key, const Value& value) {
