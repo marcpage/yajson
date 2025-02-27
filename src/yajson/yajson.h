@@ -437,7 +437,7 @@ inline std::string Value::format(int indent, int indentLevel) const {
 
 inline Value& Value::clear() {
     if (!isNull()) {
-        _instance->clear(); // NOTEST
+        _instance->clear();
     }
 
     return *this;
@@ -448,7 +448,7 @@ inline Value& Value::erase(size_t start, size_t end) {
         throw std::domain_error("null");
     }
 
-    _instance->erase(start, end); // NOTEST
+    _instance->erase(start, end);
     return *this;
 }
 
@@ -457,7 +457,7 @@ inline Value& Value::erase(const std::string& key) {
         throw std::domain_error("null");
     }
 
-    _instance->erase(key); // NOTEST
+    _instance->erase(key);
     return *this;
 }
 
@@ -637,7 +637,7 @@ inline Value Value::_parseNumber(const std::string& text, size_t& offset) {
     return value;
 }
 
-inline bool Instance::boolean() const { // NOTEST
+inline bool Instance::boolean() const {
     throw std::domain_error("wrong type");
 }
 
@@ -645,59 +645,59 @@ inline bool Instance::equals(const Instance& other) const {
     return getType() == other.getType();
 }
 
-inline int64_t Instance::integer() const { // NOTEST
+inline int64_t Instance::integer() const {
     throw std::domain_error("wrong type");
 }
 
-inline double Instance::real() const { // NOTEST
+inline double Instance::real() const {
     throw std::domain_error("wrong type");
 }
 
-inline std::string Instance::string() const { // NOTEST
+inline std::string Instance::string() const {
     throw std::domain_error("wrong type");
 }
 
-inline int Instance::count() const { // NOTEST
+inline int Instance::count() const {
     throw std::domain_error("wrong type");
 }
 
-inline Value::StringList Instance::keys() const { // NOTEST
+inline Value::StringList Instance::keys() const {
     throw std::domain_error("wrong type");
 }
 
-inline bool Instance::has(const std::string& /*key*/) { // NOTEST
+inline bool Instance::has(const std::string& /*key*/) {
     throw std::domain_error("wrong type");
 }
 
-inline Value& Instance::get(const std::string& /*key*/) { // NOTEST
+inline Value& Instance::get(const std::string& /*key*/) {
     throw std::domain_error("wrong type");
 }
 
-inline Value& Instance::get(size_t /*index*/) { // NOTEST
+inline Value& Instance::get(size_t /*index*/) {
     throw std::domain_error("wrong type");
 }
 
-inline void Instance::clear() { // NOTEST
+inline void Instance::clear() {
     throw std::domain_error("wrong type");
 }
 
-inline void Instance::erase(size_t /*start*/, size_t /*end*/) { // NOTEST
+inline void Instance::erase(size_t /*start*/, size_t /*end*/) {
     throw std::domain_error("wrong type");
 }
 
-inline void Instance::erase(const std::string& /*key*/) { // NOTEST
+inline void Instance::erase(const std::string& /*key*/) {
     throw std::domain_error("wrong type");
 }
 
-inline void Instance::set(const std::string& /*key*/, const Value& /*value*/) { // NOTEST
+inline void Instance::set(const std::string& /*key*/, const Value& /*value*/) {
     throw std::domain_error("wrong type");
 }
 
-inline void Instance::append(const Value& /*value*/) { // NOTEST
+inline void Instance::append(const Value& /*value*/) {
     throw std::domain_error("wrong type");
 }
 
-inline void Instance::insert(const Value& /*value*/, size_t /*before*/) { // NOTEST
+inline void Instance::insert(const Value& /*value*/, size_t /*before*/) {
     throw std::domain_error("wrong type");
 }
 
@@ -762,7 +762,7 @@ inline void String::format(std::string &buffer, int /*indent*/, int /*indentLeve
             case '\n':
                 buffer += "\\n";
                 break;
-            case '\b': // NOTEST
+            case '\b':
                 buffer += "\\b";
                 break;
             case '\f':
@@ -923,7 +923,7 @@ inline void String::_parseEscaped(const std::string& text, size_t& offset, std::
         case '\\':
             result += '\\';
             break;
-        case 'b': // NOTEST
+        case 'b':
             result += '\b';
             break;
         case 'f':
@@ -1151,7 +1151,7 @@ inline void Array::clear() { // NOTEST
     _value.clear();
 }
 
-inline void Array::erase(size_t start, size_t end) { // NOTEST
+inline void Array::erase(size_t start, size_t end) {
     const auto arraySize = _value.size();
 
     if (start >= arraySize) {
@@ -1293,11 +1293,11 @@ inline Value& Object::get(size_t index) {
     return Instance::get(index);
 }
 
-inline void Object::clear() { // NOTEST
+inline void Object::clear() {
     _value.clear();
 }
 
-inline void Object::erase(const std::string& key) { // NOTEST
+inline void Object::erase(const std::string& key) {
     _value.erase(key);
 }
 

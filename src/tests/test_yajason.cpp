@@ -320,6 +320,175 @@ static bool testNull() {
     return success;
 }
 
+static bool testDelete() {
+    bool success = true;
+    auto j1 = yajson::Value::parse(json);
+
+    j1["test\"me\""].erase(6,8); // remove true and false
+    j1["test\"me\""].erase(7); // remove C:\ from the end
+    j1["test\"me\""][4].clear(); // clear out ht
+    j1["test\"me\""][5].erase("bell");
+
+    success = success && j1["test\"me\""].count() == 7;
+    success = success && j1["test\"me\""][4].is(yajson::Value::Object);
+    success = success && j1["test\"me\""][4].count() == 0;
+    success = success && j1["test\"me\""][5].count() == 1;
+    success = success && j1["test\"me\""][6].isNull();
+
+    if (!success) {
+        printf("FAIL %s\n", __func__);
+    }
+
+    return success;
+}
+
+static bool testWrongType() {
+    bool success = true;
+    auto j1 = yajson::Value::parse(json);
+
+    try {
+        j1.boolean();
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.integer();
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.real();
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.string();
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""][0].count();
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""].keys();
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""].has("test");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""].get("test");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.get(0);
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""][0].clear();
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""][0].erase(1);
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""][0].erase("test");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""][0].set("test", "value");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""][0].append("value");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1["test\"me\""][0].insert("value");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    if (!success) {
+        printf("FAIL %s\n", __func__);
+    }
+
+    return success;
+}
+
+static bool testInvalidJson() {
+    bool success = true;
+
+    try {
+        yajson::Value::parse("[trust]");
+        success = false;
+    } catch(const std::invalid_argument&) {}
+
+    try {
+        yajson::Value::parse("[0xff]");
+        success = false;
+    } catch(const std::invalid_argument&) {}
+
+    try {
+        yajson::Value::parse("[0xf.f]");
+        success = false;
+    } catch(const std::invalid_argument&) {}
+
+    try {
+        yajson::Value::parse("[\"\\u{110000}\"]");
+        success = false;
+    } catch(const std::invalid_argument&) {}
+
+    try {
+        yajson::Value::parse("[\"\\i\"]");
+        success = false;
+    } catch(const std::invalid_argument&) {}
+    
+
+    if (!success) {
+        printf("FAIL %s\n", __func__);
+    }
+
+    return success;
+}
+
+static bool testUnicode() {
+    bool success = true;
+    const auto j = yajson::Value::parse(R"(
+    [
+        "snowman = \\u2620",
+        "A = \\u0041",
+        "umbrella = \\u2602",
+        "heart eyes = \\u{1F60D}"
+    ]
+    )");
+    const auto jText = j.format();
+    const auto j2 = yajson::Value::parse(jText);
+
+    success = success && j2.count() == 4;
+    printf("'%s'\n", j2[0].string().c_str());
+    printf("'%s'\n", j2[1].string().c_str());
+    printf("'%s'\n", j2[2].string().c_str());
+    printf("'%s'\n", j2[3].string().c_str());
+    if (!success) {
+        printf("FAIL %s\n", __func__);
+    }
+
+    return success;
+}
+
 int main(const int /*argc*/, const char* const /*argv*/[]) {
     int failures = 0;
 
@@ -329,6 +498,10 @@ int main(const int /*argc*/, const char* const /*argv*/[]) {
     failures += testArray() ? 0 : 1;
     failures += testCreate() ? 0 : 1;
     failures += testNull() ? 0 : 1;
+    failures += testDelete() ? 0 : 1;
+    failures += testWrongType() ? 0 : 1;
+    failures += testInvalidJson() ? 0 : 1;
+    failures += testUnicode() ? 0 : 1;
 
     if (failures > 0) {
         printf("FAIL %d tests\n", failures);
