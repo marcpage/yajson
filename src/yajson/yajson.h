@@ -212,10 +212,10 @@ public:
     virtual Value::Type getType() const override;
 
     virtual int count() const override;
-    virtual Value& get(const std::string& key);
+    virtual Value& get(const std::string& key) override;
     virtual Value& get(size_t index) override;
     virtual void clear() override;
-    virtual void erase(const std::string& key);
+    virtual void erase(const std::string& key) override;
     virtual void erase(size_t start, size_t end) override;
     virtual void append(const Value& value) override;
     virtual void insert(const Value& value, size_t before) override;
@@ -241,10 +241,10 @@ public:
     virtual int count() const override;
     virtual Value::StringList keys() const override;
     virtual bool has(const std::string& key) override;
-    virtual Value& get(const std::string& key);
+    virtual Value& get(const std::string& key) override;
     virtual Value& get(size_t index) override;
     virtual void clear() override;
-    virtual void erase(const std::string& key);
+    virtual void erase(const std::string& key) override;
     virtual void erase(size_t start, size_t end) override;
     virtual void set(const std::string& key, const Value& value) override;
 
