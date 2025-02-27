@@ -468,20 +468,17 @@ static bool testUnicode() {
     bool success = true;
     const auto j = yajson::Value::parse(R"(
     [
-        "snowman = \\u2620",
-        "A = \\u0041",
-        "umbrella = \\u2602",
-        "heart eyes = \\u{1F60D}"
+        "skull = \u2620",
+        "A = \u0041",
+        "umbrella = \u2602",
+        "heart eyes = \u{1F60D}"
     ]
     )");
     const auto jText = j.format();
     const auto j2 = yajson::Value::parse(jText);
 
     success = success && j2.count() == 4;
-    printf("'%s'\n", j2[0].string().c_str());
-    printf("'%s'\n", j2[1].string().c_str());
-    printf("'%s'\n", j2[2].string().c_str());
-    printf("'%s'\n", j2[3].string().c_str());
+
     if (!success) {
         printf("FAIL %s\n", __func__);
     }
