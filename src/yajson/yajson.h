@@ -591,7 +591,7 @@ inline void Value::_parseWord(const std::string& text, const std::string& word, 
     const auto actual = text.substr(offset, word.length());
     
     if (actual != word) {
-        throw std::invalid_argument("Invalid word: " + actual); // NOTEST
+        throw std::invalid_argument("Invalid word: " + actual);
     }
 
     offset += word.length();
@@ -784,7 +784,7 @@ inline void String::_formatCodepoint(std::string &buffer, size_t &i) const
 
     if (offset - i == 1) { // single character, just copy it across
         buffer += _value[i];
-    } else { // NOTEST
+    } else {
         const bool ecma6 = (codepoint > 0xFFFF); // u{xxxxxx} not supported before ecma6
         std::stringstream stream;
 
@@ -840,7 +840,7 @@ inline size_t String::_codepoint(const std::string &text, std::string::size_type
                     | size_t(text.data()[offset - 1] & 0x3F));
         YaJsonAssert((text.data()[offset - 1] & 0xC0) == 0x80);
         YaJsonAssert((codepoint > 0x7F) && (codepoint <= 0x7FF));
-    } else if (threeBytes) { // NOTEST
+    } else if (threeBytes) {
         YaJsonAssert(offset + 3 <= text.length());
         offset += 3;
         codepoint = ((size_t(text.data()[offset - 3] & 0x0F) << 12)
@@ -849,7 +849,7 @@ inline size_t String::_codepoint(const std::string &text, std::string::size_type
         YaJsonAssert((text.data()[offset - 1] & 0xC0) == 0x80);
         YaJsonAssert((text.data()[offset - 2] & 0xC0) == 0x80);
         YaJsonAssert((codepoint > 0x7FF) && (codepoint <= 0xFFFF));
-    } else if (fourBytes) { // NOTEST
+    } else if (fourBytes) {
         YaJsonAssert(offset + 4 <= text.length());
         offset += 4;
         codepoint = ((size_t(text.data()[offset - 4] & 0x07) << 18)
@@ -867,7 +867,7 @@ inline size_t String::_codepoint(const std::string &text, std::string::size_type
     return codepoint;
 }
 
-inline std::string String::_utf8(size_t codepoint) { // NOTEST
+inline std::string String::_utf8(size_t codepoint) {
     /*
         1  7   U+0000   U+007F    0xxxxxxx
         2  11  U+0080   U+07FF    110xxxxx  10xxxxxx
@@ -879,7 +879,7 @@ inline std::string String::_utf8(size_t codepoint) { // NOTEST
     if (codepoint <= 0x7F) {
         value.assign(1, char(codepoint));
     } else if (codepoint <= 0x7FF) {
-        char buffer[3];
+        char buffer[3]; // NOTEST
 
         buffer[0] = static_cast<char>((6 << 5) | (codepoint >> 6));
         buffer[1] = static_cast<char>((2 << 6) | (codepoint & 0x3F));
@@ -938,17 +938,17 @@ inline void String::_parseEscaped(const std::string& text, size_t& offset, std::
         case 't':
             result += '\t';
             break;
-        case 'u': // NOTEST
+        case 'u':
             _parseEscapedUnicode(text, offset, result);
             break;
-        default: // NOTEST
+        default:
             throw std::invalid_argument(std::string("Illegal escape: ") + text[offset]);
     }
     
     offset += 1;
 }
 
-inline void String::_parseEscapedUnicode(const std::string& text, size_t& offset, std::string& result) { // NOTEST
+inline void String::_parseEscapedUnicode(const std::string& text, size_t& offset, std::string& result) {
     long value;
     size_t count = 0;
 
