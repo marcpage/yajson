@@ -463,7 +463,7 @@ inline Value& Value::erase(const std::string& key) {
 
 inline Value& Value::set(const std::string& key, const Value& value) {
     if (isNull()) {
-        throw std::domain_error("null"); // NOTEST
+        throw std::domain_error("null");
     }
 
     _instance->set(key, value);
@@ -472,7 +472,7 @@ inline Value& Value::set(const std::string& key, const Value& value) {
 
 inline Value& Value::append(const Value& value) {
     if (isNull()) {
-        throw std::domain_error("null"); // NOTEST
+        throw std::domain_error("null");
     }
 
     _instance->append(value);
@@ -481,7 +481,7 @@ inline Value& Value::append(const Value& value) {
 
 inline Value& Value::insert(const Value& value, size_t before) {
     if (isNull()) {
-        throw std::domain_error("null"); // NOTEST
+        throw std::domain_error("null");
     }
 
     _instance->insert(value, before);
@@ -528,7 +528,7 @@ inline Value& Value::operator=(bool value) {
     return *this;
 }
 
-inline Value& Value::operator+=(int64_t value) { // NOTEST
+inline Value& Value::operator+=(int64_t value) {
     return *this = integer() + value;
 }
 
@@ -536,7 +536,7 @@ inline Value& Value::operator+=(int value) {
     return *this = integer() + value;
 }
 
-inline Value& Value::operator-=(int64_t value) { // NOTEST
+inline Value& Value::operator-=(int64_t value) {
     return *this = integer() - value;
 }
 
