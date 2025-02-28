@@ -33,7 +33,7 @@ $(1):$(OUTPUTDIR)/$(1)/$(1)
 	@awk '/inline/ { found=1; next } found' bin/yajson/$(1).h.gcov \
 		| grep '[A-Za-z]' \
 		| grep -Ev ':[[:space:]]*[0-9]+:[[:space:]]*#' > bin/$(1)_executable.txt
-	@cat bin/$(1)_executable.txt | grep -Ev '^\s*[0-9]+:' > bin/$(1)_unexecuted.txt
+	@cat bin/$(1)_executable.txt | grep -Ev '^\s*[0-9]+\*?:' > bin/$(1)_unexecuted.txt
 	@cat bin/$(1)_unexecuted.txt
 	@wc -l bin/$(1)_executable.txt bin/$(1)_unexecuted.txt
 
