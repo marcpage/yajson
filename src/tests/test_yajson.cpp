@@ -545,31 +545,26 @@ static bool testArrayInsertConditions() {
     auto success = true;
 
     yajson::Value array = yajson::Value::array();
-    array.append(yajson::Value(1));  // [1]
-    array.append(yajson::Value(2));  // [1, 2]
+    array.append(yajson::Value(1));
+    array.append(yajson::Value(2));
     success = success && (array.count() == 2);
 
-    // Step 2: Exercise Condition 2 (before < arraySize)
-    // Insert 3 at index 1 (within bounds, size = 2)
     array.insert(yajson::Value(3), 1);
     success = success && (array.count() == 3);
     success = success && (array[0].integer() == 1);
     success = success && (array[1].integer() == 3);
-    success = success && (array[2].integer() == 2);  // [1, 3, 2]
+    success = success && (array[2].integer() == 2);
 
-    // Step 3: Exercise Condition 1 (before >= arraySize)
-    // Insert 4 at index 3 (size = 3, so >= arraySize)
     array.insert(yajson::Value(4), 3);
     success = success && (array.count() == 4);
     success = success && (array[0].integer() == 1);
     success = success && (array[1].integer() == 3);
     success = success && (array[2].integer() == 2);
-    success = success && (array[3].integer() == 4);  // [1, 3, 2, 4]
+    success = success && (array[3].integer() == 4);
 
-    // Optional: Insert beyond size (e.g., 10 > 4)
     array.insert(yajson::Value(5), 10);
     success = success && (array.count() == 5);
-    success = success && (array[4].integer() == 5);  // [1, 3, 2, 4, 5]
+    success = success && (array[4].integer() == 5);
 
     if (!success) {
         printf("FAIL %s\n", __func__);
