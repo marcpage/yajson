@@ -802,7 +802,7 @@ inline void String::_formatCodepoint(std::string &buffer, size_t &i) const
 
 inline bool String::equals(const Instance& other) const {
     if (!Instance::equals(other)) {
-        return false; // NOTEST
+        return false;
     }
 
     return _value == dynamic_cast<const String*>(&other)->_value;
@@ -983,7 +983,7 @@ inline void Integer::format(std::string &buffer, int /*indent*/, int /*indentLev
 
 inline bool Integer::equals(const Instance& other) const {
     if (!Instance::equals(other)) {
-        return false; // NOTEST
+        return false;
     }
 
     return _value == dynamic_cast<const Integer*>(&other)->_value;
@@ -1010,7 +1010,7 @@ inline void Real::format(std::string &buffer, int /*indent*/, int /*indentLevel*
 
 inline bool Real::equals(const Instance& other) const {
     if (!Instance::equals(other)) {
-        return false; // NOTEST
+        return false;
     }
     
     const auto a = _value;
@@ -1024,7 +1024,7 @@ inline Value::Type Real::getType() const {
     return Value::Real;
 }
 
-inline double Real::real() const { // NOTEST
+inline double Real::real() const {
     return _value;
 }
 
@@ -1041,7 +1041,7 @@ inline void Boolean::format(std::string &buffer, int /*indent*/, int /*indentLev
 
 inline bool Boolean::equals(const Instance& other) const {
     if (!Instance::equals(other)) {
-        return false; // NOTEST
+        return false;
     }
 
     return _value == dynamic_cast<const Boolean*>(&other)->_value;
@@ -1121,7 +1121,7 @@ inline void Array::format(std::string &buffer, int indent, int indentLevel) cons
 
 inline bool Array::equals(const Instance& other) const {
     if (!Instance::equals(other)) {
-        return false; // NOTEST
+        return false;
     }
 
     return _value == dynamic_cast<const Array*>(&other)->_value;
@@ -1258,7 +1258,7 @@ inline void Object::format(std::string &buffer, int indent, int indentLevel) con
 
 inline bool Object::equals(const Instance& other) const {
     if (!Instance::equals(other)) {
-        return false; // NOTEST
+        return false;
     }
 
     return _value == dynamic_cast<const Object*>(&other)->_value;

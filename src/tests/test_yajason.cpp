@@ -486,6 +486,34 @@ static bool testUnicode() {
     return success;
 }
 
+static bool testMiscellaneous() {
+    bool success = true;
+    auto j = yajson::Value::array()
+                .append(3.14159265) // 1
+                .append(42) // 2
+                .append(true) // 3
+                .insert(yajson::Value::object() // 0
+                        .set("string", "value"));
+    
+    success = success && j[0] != yajson::Value::array();
+    success = success && j[0]["string"] != yajson::Value::object();
+    success = success && j[1] != yajson::Value::object();
+    success = success && j[2] != yajson::Value::object();
+    success = success && j[3] != yajson::Value::object();
+    success = success && j != yajson::Value::object();
+    success = success && j[1].real() < 3.14159266;
+    success = success && j[1].real() > 3.14159264;
+    success = success && j[1] == 3.14159265;
+    success = success && j[1] != 3.14159264;
+    success = success && j[1] != 3.14159266;
+    
+    if (!success) {
+        printf("FAIL %s\n", __func__);
+    }
+
+    return success;
+}
+
 int main(const int /*argc*/, const char* const /*argv*/[]) {
     int failures = 0;
 
@@ -499,6 +527,7 @@ int main(const int /*argc*/, const char* const /*argv*/[]) {
     failures += testWrongType() ? 0 : 1;
     failures += testInvalidJson() ? 0 : 1;
     failures += testUnicode() ? 0 : 1;
+    failures += testMiscellaneous() ? 0 : 1;
 
     if (failures > 0) {
         printf("FAIL %d tests\n", failures);
