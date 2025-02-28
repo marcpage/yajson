@@ -162,9 +162,9 @@ static bool testCreate() {
     success = success && j3["array"][0].is(yajson::Value::Array);
     success = success && j3["array"][1].is(yajson::Value::Object);
     success = success && j3["array"][2].string() == "another test string";
-    success = success && j3["array"][2] == yajson::Value("another test string");
+    success = success && j3["array"][2] == yajson::Value(std::string("another test string"));
     success = success && j3["array"][3].integer() == 7;
-    success = success && j3["array"][3] == yajson::Value(7);
+    success = success && j3["array"][3] == yajson::Value(int64_t(7));
     success = success && j3["array"][4] == yajson::Value(2.7);
     success = success && j3["array"][5] == yajson::Value();
     success = success && j3["array"][6] == yajson::Value::null();
