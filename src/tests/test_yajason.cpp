@@ -367,6 +367,16 @@ static bool testWrongType() {
     } catch(const std::domain_error&) {}
 
     try {
+        j1["test\"me\""].erase("key");
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
+        j1.erase(0);
+        success = false;
+    } catch(const std::domain_error&) {}
+
+    try {
         j1["test\"me\""][0].count();
         success = false;
     } catch(const std::domain_error&) {}
@@ -437,12 +447,12 @@ static bool testInvalidJson() {
     } catch(const std::invalid_argument&) {}
 
     try {
-        yajson::Value::parse("[0xff]");
+        yajson::Value::parse("[9223372036854775808]");
         success = false;
     } catch(const std::invalid_argument&) {}
 
     try {
-        yajson::Value::parse("[0xf.f]");
+        yajson::Value::parse("[...]");
         success = false;
     } catch(const std::invalid_argument&) {}
 
@@ -455,7 +465,12 @@ static bool testInvalidJson() {
         yajson::Value::parse("[\"\\i\"]");
         success = false;
     } catch(const std::invalid_argument&) {}
-    
+
+    try {
+        const auto j = yajson::Value::parse("[\"\x80xyz\"]");
+        j.format();
+        success = false;
+    } catch(const std::invalid_argument&) {}    
 
     if (!success) {
         printf("FAIL %s\n", __func__);
@@ -471,13 +486,15 @@ static bool testUnicode() {
         "skull = \u2620",
         "A = \u0041",
         "umbrella = \u2602",
-        "heart eyes = \u{1F60D}"
+        "heart eyes = \u{1F60D}",
+        "copyright = \u00A9"
     ]
     )");
     const auto jText = j.format();
     const auto j2 = yajson::Value::parse(jText);
 
-    success = success && j2.count() == 4;
+    success = success && j2.count() == 5;
+    success = success && j2 == j;
 
     if (!success) {
         printf("FAIL %s\n", __func__);
@@ -506,7 +523,54 @@ static bool testMiscellaneous() {
     success = success && j[1] == 3.14159265;
     success = success && j[1] != 3.14159264;
     success = success && j[1] != 3.14159266;
+
+    success = success && j.count() == 4;
+
+    j.erase(5);
+
+    success = success && j.count() == 4;
+
+    j.clear();
+
+    success = success && j.count() == 0;
     
+    if (!success) {
+        printf("FAIL %s\n", __func__);
+    }
+
+    return success;
+}
+
+static bool testArrayInsertConditions() {
+    auto success = true;
+
+    yajson::Value array = yajson::Value::array();
+    array.append(yajson::Value(1));  // [1]
+    array.append(yajson::Value(2));  // [1, 2]
+    success = success && (array.count() == 2);
+
+    // Step 2: Exercise Condition 2 (before < arraySize)
+    // Insert 3 at index 1 (within bounds, size = 2)
+    array.insert(yajson::Value(3), 1);
+    success = success && (array.count() == 3);
+    success = success && (array[0].integer() == 1);
+    success = success && (array[1].integer() == 3);
+    success = success && (array[2].integer() == 2);  // [1, 3, 2]
+
+    // Step 3: Exercise Condition 1 (before >= arraySize)
+    // Insert 4 at index 3 (size = 3, so >= arraySize)
+    array.insert(yajson::Value(4), 3);
+    success = success && (array.count() == 4);
+    success = success && (array[0].integer() == 1);
+    success = success && (array[1].integer() == 3);
+    success = success && (array[2].integer() == 2);
+    success = success && (array[3].integer() == 4);  // [1, 3, 2, 4]
+
+    // Optional: Insert beyond size (e.g., 10 > 4)
+    array.insert(yajson::Value(5), 10);
+    success = success && (array.count() == 5);
+    success = success && (array[4].integer() == 5);  // [1, 3, 2, 4, 5]
+
     if (!success) {
         printf("FAIL %s\n", __func__);
     }
@@ -528,6 +592,7 @@ int main(const int /*argc*/, const char* const /*argv*/[]) {
     failures += testInvalidJson() ? 0 : 1;
     failures += testUnicode() ? 0 : 1;
     failures += testMiscellaneous() ? 0 : 1;
+    failures += testArrayInsertConditions() ? 0 : 1;
 
     if (failures > 0) {
         printf("FAIL %d tests\n", failures);

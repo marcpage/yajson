@@ -619,7 +619,7 @@ inline Value Value::_parseNumber(const std::string& text, size_t& offset) {
         try {
             value = std::stod(text.substr(start, offset - start), &after);
         } catch (const std::exception &exception) {
-            throw std::invalid_argument(std::string("Illegal Number: ")  // NOTEST
+            throw std::invalid_argument(std::string("Illegal Number: ")
                                     + text.substr(start, offset - start));
         }
     } else {
@@ -628,7 +628,7 @@ inline Value Value::_parseNumber(const std::string& text, size_t& offset) {
 
             value = static_cast<int64_t>(converted);
         } catch (const std::exception &exception) {
-            throw std::invalid_argument(std::string("Illegal Number: ") // NOTEST
+            throw std::invalid_argument(std::string("Illegal Number: ")
                                         + text.substr(start, offset - start));
         }
     }
@@ -833,7 +833,7 @@ inline size_t String::_codepoint(const std::string &text, std::string::size_type
         offset += 1;
         codepoint = text.data()[offset - 1] & 0xFF;
         YaJsonAssert(codepoint <= 0x7F);
-    } else if (twoBytes) { // NOTEST
+    } else if (twoBytes) {
         YaJsonAssert(offset + 2 <= text.length());
         offset += 2;
         codepoint = ((size_t(text.data()[offset - 2] & 0x1F) << 6)
@@ -860,7 +860,7 @@ inline size_t String::_codepoint(const std::string &text, std::string::size_type
         YaJsonAssert((text.data()[offset - 2] & 0xC0) == 0x80);
         YaJsonAssert((text.data()[offset - 3] & 0xC0) == 0x80);
         YaJsonAssert((codepoint > 0xFFFF) && (codepoint <= 0x10FFFF));
-    } else { // NOTEST
+    } else {
         throw std::invalid_argument("invalid codepoint: " + text.substr(offset, 4));
     }
 
@@ -879,7 +879,7 @@ inline std::string String::_utf8(size_t codepoint) {
     if (codepoint <= 0x7F) {
         value.assign(1, char(codepoint));
     } else if (codepoint <= 0x7FF) {
-        char buffer[3]; // NOTEST
+        char buffer[3];
 
         buffer[0] = static_cast<char>((6 << 5) | (codepoint >> 6));
         buffer[1] = static_cast<char>((2 << 6) | (codepoint & 0x3F));
@@ -1147,7 +1147,7 @@ inline Value& Array::get(size_t index) {
     return _value[index];
 }
 
-inline void Array::clear() { // NOTEST
+inline void Array::clear() {
     _value.clear();
 }
 
@@ -1177,7 +1177,7 @@ inline void Array::append(const Value& value) {
 inline void Array::insert(const Value& value, size_t before) {
     const auto arraySize = _value.size();
     const auto beforeIter = before >= arraySize 
-                            ? _value.end()  // NOTEST
+                            ? _value.end()
                             : _value.begin() + static_cast<int>(before);
 
     _value.insert(beforeIter, value);
