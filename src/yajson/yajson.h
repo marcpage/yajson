@@ -1274,10 +1274,10 @@ inline int Object::count() const {
 
 inline Value::StringList Object::keys() const {
     Value::StringList keys;
-
+    
     keys.reserve(_value.size());
     std::transform(_value.begin(), _value.end(), std::back_inserter(keys),
-                   [](const auto& pair) { return pair.first; });
+                   [](const std::pair<std::string, Value>& pair) { return pair.first; });
     return keys;
 }
 
