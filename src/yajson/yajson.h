@@ -382,7 +382,7 @@ inline std::string Value::string() const {
     return isNull() ? std::string() : _instance->string();
 }
 
-bool Value::isNull() const {
+inline bool Value::isNull() const {
     return nullptr == _instance;
 }
 
