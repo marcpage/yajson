@@ -93,7 +93,7 @@ public:
     typedef std::unique_ptr<Instance> InstPtr;
     static size_t skipWhitespace(const std::string& text, size_t offset);
 private:
-    Value(InstPtr instance);
+    explicit Value(InstPtr instance);
     InstPtr _instance;
 
     static void _parseWord(const std::string& text, const std::string& word, size_t& offset);
@@ -134,8 +134,8 @@ class String : public Instance {
 public:
     static std::string parse(const std::string& text, size_t& offset);
 
-    String(const std::string& value);
-    virtual ~String()=default;
+    explicit String(const std::string& value);
+    virtual ~String() override {};
 
     virtual Instance *clone() const override;
     virtual void format(std::string &buffer, int indent, int indentLevel) const override;
@@ -157,8 +157,8 @@ private:
 
 class Integer : public Instance {
 public:
-    Integer(const int64_t value);
-    virtual ~Integer()=default;
+    explicit Integer(const int64_t value);
+    virtual ~Integer() override {};
 
     virtual Instance *clone() const override;
     virtual void format(std::string &buffer, int indent, int indentLevel) const override;
@@ -175,8 +175,8 @@ private:
     
 class Real : public Instance {
 public:
-    Real(const double value);
-    virtual ~Real()=default;
+    explicit Real(const double value);
+    virtual ~Real() override {};
 
     virtual Instance *clone() const override;
     virtual void format(std::string &buffer, int indent, int indentLevel) const override;
@@ -193,8 +193,8 @@ private:
 
 class Boolean : public Instance {
 public:
-    Boolean(const bool value);
-    virtual ~Boolean()=default;
+    explicit Boolean(const bool value);
+    virtual ~Boolean() override {};
 
     virtual Instance *clone() const override;
     virtual void format(std::string &buffer, int indent, int indentLevel) const override;
@@ -213,8 +213,8 @@ class Array : public Instance {
 public:
     static Array* parse(const std::string& text, size_t& offset);
 
-    Array(const std::vector<Value>& value);
-    virtual ~Array()=default;
+    explicit Array(const std::vector<Value>& value);
+    virtual ~Array() override {};
 
     virtual Instance *clone() const override;
     virtual void format(std::string &buffer, int indent, int indentLevel) const override;
@@ -240,8 +240,8 @@ class Object : public Instance {
 public:
     static Object* parse(const std::string& text, size_t& offset);
     
-    Object(const std::map<std::string, Value>& value);
-    virtual ~Object()=default;
+    explicit Object(const std::map<std::string, Value>& value);
+    virtual ~Object() override {};
 
     virtual Instance *clone() const override;
     virtual void format(std::string &buffer, int indent, int indentLevel) const override;
@@ -265,6 +265,8 @@ private:
 };
 
 #define YaJsonAssert(expression) if (!(expression)) {throw std::invalid_argument("Failed: " #expression);} else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wempty-body"
 
 inline Value Value::parse(const std::string& jsonText, size_t* position) {
     Value value;
@@ -382,7 +384,7 @@ inline std::string Value::string() const {
     return isNull() ? std::string() : _instance->string();
 }
 
-bool Value::isNull() const {
+inline bool Value::isNull() const {
     return nullptr == _instance;
 }
 
@@ -1319,5 +1321,6 @@ inline void Object::set(const std::string& key, const Value& value) {
     _value[key] = value;
 }
 
+#pragma GCC diagnostic pop
 #undef YaJsonAssert
 }
